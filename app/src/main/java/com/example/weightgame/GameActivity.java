@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +19,7 @@ public class GameActivity extends Activity {
 
     private static GameActivity instance;
 
-    private TimerHandler mTimerHandler;
-    private PositionHandler mPositionHandler;
+    private GameHandler mGameHandler;
     private List<ImageView> mImageList = new ArrayList<>();
     private ImageView[] mImageViews;
     private int[] mImageWeight = new int[7];
@@ -43,10 +43,10 @@ public class GameActivity extends Activity {
     private float[] mLeftVerseViewPositions = new float[4];
     private float[] mRightVerseViewPositions = new float[4];
     private long startTime = 120000;
-    private static final int MESSAGE_TIMER_START = 0;
-    private static final int MESSAGE_TIMER_PLAY = 1;
-    private static final int MESSAGE_TIMER_END = 2;
-    private static final int MESSAGE_GET_POSITION = 3;
+    public static final int MESSAGE_TIMER_START = 0;
+    public static final int MESSAGE_TIMER_PLAY = 1;
+    public static final int MESSAGE_TIMER_END = 2;
+    public static final int MESSAGE_SET_POSITION = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +70,12 @@ public class GameActivity extends Activity {
         mRightViewTreeObserver = mRightVerseView.getViewTreeObserver();
         mVerseView = findViewById(R.id.verse_view);
 
-        mTimerHandler = new TimerHandler();
-        mPositionHandler = new PositionHandler();
+        mGameHandler = new GameHandler();
 
         addImageToList();
         setTouchAndWeight();
 
-        mTimerHandler.sendEmptyMessageDelayed(MESSAGE_TIMER_START, 10);
+        mGameHandler.sendEmptyMessageDelayed(MESSAGE_TIMER_START, 100);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class GameActivity extends Activity {
         super.onResume();
         Log.v(TAG, "onResume(...)");
 
-        mPositionHandler.sendEmptyMessage(MESSAGE_GET_POSITION);
+        mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
     }
 
     public static synchronized GameActivity getInstance() {
@@ -130,7 +129,7 @@ public class GameActivity extends Activity {
 
         if(startTime == 0) {
             mTimerView.setText("GameOver");
-            mTimerHandler.sendEmptyMessage(MESSAGE_TIMER_END);
+            mGameHandler.sendEmptyMessage(MESSAGE_TIMER_END);
         } else {
 
             mTimerView.setText(setTimeFormat(startTime));
@@ -192,12 +191,9 @@ public class GameActivity extends Activity {
         return mRightVerseViewPositions;
     }
 
-    public ImageView getVerseView() {
-        return mLeftVerseView;
-    }
-    private class TimerHandler extends Handler {
+    public class GameHandler extends Handler {
 
-        private static final String TAG = "TimerHandler";
+        private static final String TAG = "GameHandler";
 
         @Override
         public void handleMessage(Message message) {
@@ -222,26 +218,13 @@ public class GameActivity extends Activity {
 
                     this.removeMessages(MESSAGE_TIMER_PLAY);
                     break;
-            }
-        }
-    }
-
-    private class PositionHandler extends Handler {
-        private static final String TAG = "PositionHandler";
-
-        @Override
-        public void handleMessage(Message message) {
-            Log.v(TAG, "handleMessage(...)");
-
-            switch (message.what) {
-                case MESSAGE_GET_POSITION:
+                case MESSAGE_SET_POSITION:
                     Log.d(TAG, "handleMessage(...) Get ImageView Positions");
 
                     setLeftVerseViewPositions(mLeftVerseView.getX(), mLeftVerseView.getY(),
                             mLeftVerseView.getX()+mLeftVerseView.getWidth(), mLeftVerseView.getY()+mLeftVerseView.getHeight());
                     setRightVerseViewPositions(mRightVerseView.getX(), mRightVerseView.getY(),
                             mRightVerseView.getX()+mRightVerseView.getWidth(), mRightVerseView.getY()+mRightVerseView.getHeight());
-                    getLeftVerseViewPositions();
             }
         }
     }
