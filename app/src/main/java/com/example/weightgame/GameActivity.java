@@ -71,7 +71,7 @@ public class GameActivity extends Activity {
         addImageToList();
         setTouchAndWeight();
 
-        mGameHandler.sendEmptyMessageDelayed(MESSAGE_TIMER_START, 100);
+        mGameHandler.sendEmptyMessageDelayed(MESSAGE_TIMER_START, 1000);
     }
 
     @Override
@@ -89,6 +89,7 @@ public class GameActivity extends Activity {
         return instance;
     }
 
+    // 이미지뷰를 쉽게 쓰기 위해 리스트에 추가하는 함수
     private void addImageToList() {
         Log.v(TAG, "addImageToList(...)");
 
@@ -104,6 +105,7 @@ public class GameActivity extends Activity {
         Log.d(TAG, "addImageToList(...) mImageViews.length : " + mImageViews.length);
     }
 
+    // 이미지뷰 각각의 무게 랜덤으로 설정
     private void setTouchAndWeight() {
         Log.v(TAG, "setTouchAndWeight(...)");
 
@@ -120,8 +122,11 @@ public class GameActivity extends Activity {
         }
     }
 
+    // 타이머 갱신 함수
     private void setTimerText() {
         if(DEBUG) Log.v(TAG, "setTimerText(...)");
+
+        startTime-=1000;
 
         if(startTime == 0) {
             mTimerView.setText("GameOver");
@@ -131,6 +136,7 @@ public class GameActivity extends Activity {
         }
     }
 
+    // 타이머 mm:ss 형식으로 나타낼 수 있는 함수
     private String setTimerFormat(long targetTime) {
         if(DEBUG) Log.v(TAG, "setTimeFormat(...)");
 
@@ -152,6 +158,7 @@ public class GameActivity extends Activity {
         return mOutputText;
     }
 
+    // 왼쪽 상자 좌표 얻어오는 함수
     private void setLeftRectanglePositions(float x, float y, float xpluswidth, float yplusheight) {
         mLeftRectanglePositions[0] =  x;
         mLeftRectanglePositions[1] = y;
@@ -162,6 +169,7 @@ public class GameActivity extends Activity {
                 + " , width+x : " + mLeftRectanglePositions[2] + " , height+y : " + mLeftRectanglePositions[3]);
     }
 
+    // 오른쪽 상자 좌표 얻어오는 함수
     private void setRightRectanglePositions(float x, float y, float xpluswidth, float yplusheight) {
         mRightRectanglePositions[0] = x;
         mRightRectanglePositions[1] = y;
@@ -172,19 +180,22 @@ public class GameActivity extends Activity {
                 + " , width+x : " + xpluswidth + " , height+y : " + yplusheight);
     }
 
+    // 다른 클래스에서 왼쪽 상자 좌표를 사용할 수 있게 보내는 함수
     public float[] getLeftRectanglePositions() {
         Log.d(TAG, "getLeftVerseViewPositions(...) x : " + mLeftRectanglePositions[0] + ", y : " + mLeftRectanglePositions[1]
                 + " , width+x : " + mLeftRectanglePositions[2] + " , height+y : " + mLeftRectanglePositions[3]);
         return mLeftRectanglePositions;
     }
 
+    // 다른 클래스에서 오른쪽 상자 좌표를 사용할 수 있게 보내는 함수
     public float[] getRightRectanglePositions() {
         Log.d(TAG, "getRightVerseViewPositions(...) x : " + mRightRectanglePositions[0] + ", y : " + mRightRectanglePositions[1]
                 + " , width+x : " + mRightRectanglePositions[2] + " , height+y : " + mRightRectanglePositions[3]);
         return mRightRectanglePositions;
     }
 
-    public class GameHandler extends Handler {
+    //게임 기능 다루는 핸들러
+    private class GameHandler extends Handler {
 
         private static final String TAG = "GameHandler";
 
@@ -202,7 +213,6 @@ public class GameActivity extends Activity {
                     if(DEBUG) Log.d(TAG, "handleMessage(...) Timer Playing : " + startTime);
 
                     setTimerText();
-                    startTime-=1000;
                     this.sendEmptyMessageDelayed(MESSAGE_TIMER_PLAY, 1000);
                     break;
                 case MESSAGE_TIMER_END:

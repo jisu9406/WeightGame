@@ -11,21 +11,21 @@ public class TouchListener implements View.OnTouchListener {
     private static final String TAG = "TouchListener";
     private static final boolean DEBUG = false;
 
+    // 움직이는 위치대로 드래그하게 할 수 있는 좌표변수
     private float oldXvalue;
     private float oldYvalue;
     private float newXvalue;
     private float newYvalue;
-
-    //어떤 상자에도 넣지 않았을 시를 위해 필요한 변수.
+    // 어떤 상자에도 넣지 않았을 때를 위해 필요한 좌표변수
     private float viewX;
     private float viewY;
-
 
     private float[] mLeftRectanglePositions = new float[4];
     private float[] mRightRectanglePositions = new float[4];
 
     private GameActivity gameActivity;
 
+    // 생성자를 정의해서 인자로 activity를 넣어줘야 지정한 activity에서 이미지뷰의 좌표를 받아올 수 있음
     public TouchListener(GameActivity gameActivity) {
         this.gameActivity = gameActivity;
     }
@@ -38,16 +38,12 @@ public class TouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN:
                 Log.v(TAG, "onTouch(...) Action Down");
 
-                //어떤 상자에도 넣지 않았을 시를 위해 필요한 변수.
                 viewX = view.getX();
                 viewY = view.getY();
-
                 oldXvalue = view.getX() - motionEvent.getRawX();
                 oldYvalue = view.getY() - motionEvent.getRawY();
 
-                Log.d(TAG, "Event.getX() : "+ motionEvent.getX() + ", Event.getY() : " + motionEvent.getY());
-                Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());
-
+                Log.d(TAG, "Before X position : "+ oldXvalue + ", Before Y position : " + oldYvalue);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -63,20 +59,18 @@ public class TouchListener implements View.OnTouchListener {
                 Log.v(TAG, "onTouch(...) Action Up");
 
                 setInRectangle(view);
-                Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());
                 break;
         }
 
         return true;
     }
 
+    // 상자에 넣을 수 있는 함수
     private void setInRectangle(View targetView) {
-        Log.v(TAG, "setInRectangle(...)");
         mLeftRectanglePositions = gameActivity.getLeftRectanglePositions();
         mRightRectanglePositions = gameActivity.getRightRectanglePositions();
 
         targetView.animate().x(mLeftRectanglePositions[0]).y(mLeftRectanglePositions[1]).setDuration(0).start();
-
         if (newXvalue >= mLeftRectanglePositions[0] && newXvalue <= mLeftRectanglePositions[2]
                 && newYvalue >= mLeftRectanglePositions[1] && newYvalue <= mLeftRectanglePositions[3]) {
             Log.d(TAG, "setInRectangle(...) Target View in LeftLectangle!");
