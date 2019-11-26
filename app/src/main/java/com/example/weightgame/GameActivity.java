@@ -32,14 +32,14 @@ public class GameActivity extends Activity {
     private ImageView mFoodImageView5;
     private ImageView mFoodImageView6;
     private ImageView mFoodImageView7;
-    public ImageView mLeftVerseView;
-    private ImageView mRightVerseView;
+    private ImageView mLeftRectangleView;
+    private ImageView mRightRectangleView;
 
     private TextView mTimerView;
     private TextView mVerseView;
 
-    public float[] mLeftVerseViewPositions = new float[4];
-    public float[] mRightVerseViewPositions = new float[4];
+    public float[] mLeftRectanglePositions = new float[4];
+    public float[] mRightRectanglePositions = new float[4];
     private long startTime = 120000;
     public static final int MESSAGE_TIMER_START = 0;
     public static final int MESSAGE_TIMER_PLAY = 1;
@@ -62,8 +62,8 @@ public class GameActivity extends Activity {
 
         mTimerView = findViewById(R.id.timer_view);
 
-        mLeftVerseView = findViewById(R.id.verse_of_leftview);
-        mRightVerseView = findViewById(R.id.verse_of_rightview);
+        mLeftRectangleView = findViewById(R.id.verse_of_leftview);
+        mRightRectangleView = findViewById(R.id.verse_of_rightview);
         mVerseView = findViewById(R.id.verse_view);
 
         mGameHandler = new GameHandler();
@@ -81,6 +81,7 @@ public class GameActivity extends Activity {
         mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
     }
 
+    //싱글톤
     public static synchronized GameActivity getInstance() {
         if(instance == null){
             instance = new GameActivity();
@@ -126,12 +127,11 @@ public class GameActivity extends Activity {
             mTimerView.setText("GameOver");
             mGameHandler.sendEmptyMessage(MESSAGE_TIMER_END);
         } else {
-
-            mTimerView.setText(setTimeFormat(startTime));
+            mTimerView.setText(setTimerFormat(startTime));
         }
     }
 
-    private String setTimeFormat(long targetTime) {
+    private String setTimerFormat(long targetTime) {
         if(DEBUG) Log.v(TAG, "setTimeFormat(...)");
 
         String mOutputText = "00:00";
@@ -152,38 +152,36 @@ public class GameActivity extends Activity {
         return mOutputText;
     }
 
-    private void setLeftVerseViewPositions(float x, float y, float xpluswidth, float yplusheight) {
+    private void setLeftRectanglePositions(float x, float y, float xpluswidth, float yplusheight) {
+        mLeftRectanglePositions[0] =  x;
+        mLeftRectanglePositions[1] = y;
+        mLeftRectanglePositions[2]= xpluswidth;
+        mLeftRectanglePositions[3] = yplusheight;
 
-        mLeftVerseViewPositions[0] =  x;
-        mLeftVerseViewPositions[1] = y;
-        mLeftVerseViewPositions[2]= xpluswidth;
-        mLeftVerseViewPositions[3] = yplusheight;
-
-        Log.d(TAG, "setLeftVerseViewPositions(...) x : " + mLeftVerseViewPositions[0] + ", y : " + mLeftVerseViewPositions[1]
-                + " , width+x : " + mLeftVerseViewPositions[2] + " , height+y : " + mLeftVerseViewPositions[3]);
+        Log.d(TAG, "setLeftVerseViewPositions(...) x : " + mLeftRectanglePositions[0] + ", y : " + mLeftRectanglePositions[1]
+                + " , width+x : " + mLeftRectanglePositions[2] + " , height+y : " + mLeftRectanglePositions[3]);
     }
 
-    private void setRightVerseViewPositions(float x, float y, float xpluswidth, float yplusheight) {
-
-        mRightVerseViewPositions[0] = x;
-        mRightVerseViewPositions[1] = y;
-        mRightVerseViewPositions[2] = xpluswidth;
-        mRightVerseViewPositions[3] = yplusheight;
+    private void setRightRectanglePositions(float x, float y, float xpluswidth, float yplusheight) {
+        mRightRectanglePositions[0] = x;
+        mRightRectanglePositions[1] = y;
+        mRightRectanglePositions[2] = xpluswidth;
+        mRightRectanglePositions[3] = yplusheight;
 
         Log.d(TAG, "setRightVerseViewPositions(...) x : " + x + ", y : " + y
                 + " , width+x : " + xpluswidth + " , height+y : " + yplusheight);
     }
 
-    public float[] getLeftVerseViewPositions() {
-        Log.d(TAG, "getLeftVerseViewPositions(...) x : " + mLeftVerseViewPositions[0] + ", y : " + mLeftVerseViewPositions[1]
-                + " , width+x : " + mLeftVerseViewPositions[2] + " , height+y : " + mLeftVerseViewPositions[3]);
-        return mLeftVerseViewPositions;
+    public float[] getLeftRectanglePositions() {
+        Log.d(TAG, "getLeftVerseViewPositions(...) x : " + mLeftRectanglePositions[0] + ", y : " + mLeftRectanglePositions[1]
+                + " , width+x : " + mLeftRectanglePositions[2] + " , height+y : " + mLeftRectanglePositions[3]);
+        return mLeftRectanglePositions;
     }
-    public float[] getRightVerseViewPositions() {
-        Log.d(TAG, "getRightVerseViewPositions(...) x : " + mRightVerseViewPositions[0] + ", y : " + mRightVerseViewPositions[1]
-                + " , width+x : " + mRightVerseViewPositions[2] + " , height+y : " + mRightVerseViewPositions[3]);
 
-        return mRightVerseViewPositions;
+    public float[] getRightRectanglePositions() {
+        Log.d(TAG, "getRightVerseViewPositions(...) x : " + mRightRectanglePositions[0] + ", y : " + mRightRectanglePositions[1]
+                + " , width+x : " + mRightRectanglePositions[2] + " , height+y : " + mRightRectanglePositions[3]);
+        return mRightRectanglePositions;
     }
 
     public class GameHandler extends Handler {
@@ -215,10 +213,10 @@ public class GameActivity extends Activity {
                 case MESSAGE_SET_POSITION:
                     Log.d(TAG, "handleMessage(...) Get ImageView Positions");
 
-                    setLeftVerseViewPositions(mLeftVerseView.getX(), mLeftVerseView.getY(),
-                            mLeftVerseView.getX()+mLeftVerseView.getWidth(), mLeftVerseView.getY()+mLeftVerseView.getHeight());
-                    setRightVerseViewPositions(mRightVerseView.getX(), mRightVerseView.getY(),
-                            mRightVerseView.getX()+mRightVerseView.getWidth(), mRightVerseView.getY()+mRightVerseView.getHeight());
+                    setLeftRectanglePositions(mLeftRectangleView.getX(), mLeftRectangleView.getY(),
+                            mLeftRectangleView.getX()+mLeftRectangleView.getWidth(), mLeftRectangleView.getY()+mLeftRectangleView.getHeight());
+                    setRightRectanglePositions(mRightRectangleView.getX(), mRightRectangleView.getY(),
+                            mRightRectangleView.getX()+mRightRectangleView.getWidth(), mRightRectangleView.getY()+mRightRectangleView.getHeight());
                     break;
             }
         }

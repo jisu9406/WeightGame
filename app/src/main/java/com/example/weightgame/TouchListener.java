@@ -15,9 +15,16 @@ public class TouchListener implements View.OnTouchListener {
     private float oldYvalue;
     private float newXvalue;
     private float newYvalue;
-    private float[] LeftVerseViewPositions = new float[4];
 
-    private GameActivity gameActivity = null;
+    //어떤 상자에도 넣지 않았을 시를 위해 필요한 변수.
+    private float viewX;
+    private float viewY;
+
+
+    private float[] mLeftRectanglePositions = new float[4];
+    private float[] mRightRectanglePositions = new float[4];
+
+    private GameActivity gameActivity;
 
     public TouchListener(GameActivity gameActivity) {
         this.gameActivity = gameActivity;
@@ -30,6 +37,10 @@ public class TouchListener implements View.OnTouchListener {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.v(TAG, "onTouch(...) Action Down");
+
+                //어떤 상자에도 넣지 않았을 시를 위해 필요한 변수.
+                viewX = view.getX();
+                viewY = view.getY();
 
                 oldXvalue = view.getX() - motionEvent.getRawX();
                 oldYvalue = view.getY() - motionEvent.getRawY();
@@ -51,9 +62,8 @@ public class TouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
                 Log.v(TAG, "onTouch(...) Action Up");
 
-                LeftVerseViewPositions = gameActivity.getLeftVerseViewPositions();
                 setInRectangle(view);
-                Log.d(TAG, "LeftVerseViewPositions[0] : "+ LeftVerseViewPositions[0] + ", LeftVerseViewPositions[1] : " + LeftVerseViewPositions[1]);
+                Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());
                 break;
         }
 
@@ -62,24 +72,25 @@ public class TouchListener implements View.OnTouchListener {
 
     private void setInRectangle(View targetView) {
         Log.v(TAG, "setInRectangle(...)");
+        mLeftRectanglePositions = gameActivity.getLeftRectanglePositions();
+        mRightRectanglePositions = gameActivity.getRightRectanglePositions();
 
-//        Float[] mRightVerseViewLocations = GameActivity.getInstance().getRightVerseViewLocation();
-//
-//        if (view.getX() >= mLeftVerseViewLocations[0] && view.getX() <= mLeftVerseViewLocations[2]
-//                && view.getY() >= mLeftVerseViewLocations[1] && view.getY() <= mLeftVerseViewLocations[3]) {
-//            targetView.animate().x(LeftVerseViewPositions[0]).y(LeftVerseViewPositions[1]).setDuration(0).start();
-//
-//            Log.d(TAG, "setInRectangle(...) Target View in LeftLectangle!");
-//        } else if (view.getX() >= mRightVerseViewLocations[0] && view.getX() <= mRightVerseViewLocations[2]
-//                && view.getY() >= mRightVerseViewLocations[1] && view.getY() <= mRightVerseViewLocations[3]) {
-//            view.setX(mRightVerseViewLocations[0] + 10);
-//            view.setY(mRightVerseViewLocations[1] + 10);
-//
-//            Log.d(TAG, "setInRectangle(...) Target View in RightLectangle!");
-//        } else {
-//            view.animate() .x(viewXvalue) .y(viewYvalue) .setDuration(0) .start();
-//
-//            Log.d(TAG, "setInRectangle(...) Failed into Any Lectangle");
-//        }
+        targetView.animate().x(mLeftRectanglePositions[0]).y(mLeftRectanglePositions[1]).setDuration(0).start();
+
+        if (newXvalue >= mLeftRectanglePositions[0] && newXvalue <= mLeftRectanglePositions[2]
+                && newYvalue >= mLeftRectanglePositions[1] && newYvalue <= mLeftRectanglePositions[3]) {
+            Log.d(TAG, "setInRectangle(...) Target View in LeftLectangle!");
+
+            targetView.animate().x(mLeftRectanglePositions[0]+10).y(mLeftRectanglePositions[1]+10).setDuration(0).start();
+        } else if (newXvalue >= mRightRectanglePositions[0] && newXvalue <= mRightRectanglePositions[2]
+                && newYvalue >= mRightRectanglePositions[1] && newYvalue <= mRightRectanglePositions[3]) {
+            Log.d(TAG, "setInRectangle(...) Target View in RightLectangle!");
+
+            targetView.animate().x(mRightRectanglePositions[0]+10).y(mRightRectanglePositions[1]+10).setDuration(0).start();
+        } else {
+            targetView.animate() .x(viewX) .y(viewY) .setDuration(0) .start();
+
+            Log.d(TAG, "setInRectangle(...) Failed into Any Lectangle");
+        }
     }
 }
