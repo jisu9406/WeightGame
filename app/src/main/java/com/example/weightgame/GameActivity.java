@@ -16,7 +16,7 @@ import java.util.Random;
 public class GameActivity extends Activity {
 
     private static final String TAG = "GameActivity";
-
+    private static final boolean DEBUG = false;
     private static GameActivity instance;
 
     private GameHandler mGameHandler;
@@ -24,8 +24,6 @@ public class GameActivity extends Activity {
     private ImageView[] mImageViews;
     private int[] mImageWeight = new int[7];
     private Random random = new Random();
-    ViewTreeObserver mLeftViewTreeObserver;
-    ViewTreeObserver mRightViewTreeObserver;
 
     private ImageView mFoodImageView1;
     private ImageView mFoodImageView2;
@@ -40,8 +38,8 @@ public class GameActivity extends Activity {
     private TextView mTimerView;
     private TextView mVerseView;
 
-    private float[] mLeftVerseViewPositions = new float[4];
-    private float[] mRightVerseViewPositions = new float[4];
+    public float[] mLeftVerseViewPositions = new float[4];
+    public float[] mRightVerseViewPositions = new float[4];
     private long startTime = 120000;
     public static final int MESSAGE_TIMER_START = 0;
     public static final int MESSAGE_TIMER_PLAY = 1;
@@ -65,9 +63,7 @@ public class GameActivity extends Activity {
         mTimerView = findViewById(R.id.timer_view);
 
         mLeftVerseView = findViewById(R.id.verse_of_leftview);
-        mLeftViewTreeObserver = mLeftVerseView.getViewTreeObserver();
         mRightVerseView = findViewById(R.id.verse_of_rightview);
-        mRightViewTreeObserver = mRightVerseView.getViewTreeObserver();
         mVerseView = findViewById(R.id.verse_view);
 
         mGameHandler = new GameHandler();
@@ -82,8 +78,14 @@ public class GameActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.v(TAG, "onResume(...)");
+        //mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
+    }
 
-        mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
+    @Override
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        mLeftVerseViewPositions[0] = mLeftVerseView.getX();
+        mLeftVerseViewPositions[1] = mLeftVerseView.getY();
     }
 
     public static synchronized GameActivity getInstance() {
@@ -125,7 +127,7 @@ public class GameActivity extends Activity {
     }
 
     private void setTimerText() {
-        Log.v(TAG, "setTimerText(...)");
+        if(DEBUG) Log.v(TAG, "setTimerText(...)");
 
         if(startTime == 0) {
             mTimerView.setText("GameOver");
@@ -137,7 +139,7 @@ public class GameActivity extends Activity {
     }
 
     private String setTimeFormat(long targetTime) {
-        Log.v(TAG, "setTimeFormat(...)");
+        if(DEBUG) Log.v(TAG, "setTimeFormat(...)");
 
         String mOutputText = "00:00";
         long seconds = targetTime / 1000;
@@ -197,7 +199,6 @@ public class GameActivity extends Activity {
 
         @Override
         public void handleMessage(Message message) {
-            Log.v(TAG, "handleMessage(...)");
 
             switch (message.what) {
                 case MESSAGE_TIMER_START:
@@ -207,7 +208,7 @@ public class GameActivity extends Activity {
                     this.sendEmptyMessage(MESSAGE_TIMER_PLAY);
                     break;
                 case MESSAGE_TIMER_PLAY:
-                    //Log.d(TAG, "handleMessage(...) Timer Playing : " + startTime);
+                    if(DEBUG) Log.d(TAG, "handleMessage(...) Timer Playing : " + startTime);
 
                     setTimerText();
                     startTime-=1000;
@@ -225,6 +226,7 @@ public class GameActivity extends Activity {
                             mLeftVerseView.getX()+mLeftVerseView.getWidth(), mLeftVerseView.getY()+mLeftVerseView.getHeight());
                     setRightVerseViewPositions(mRightVerseView.getX(), mRightVerseView.getY(),
                             mRightVerseView.getX()+mRightVerseView.getWidth(), mRightVerseView.getY()+mRightVerseView.getHeight());
+                    break;
             }
         }
     }

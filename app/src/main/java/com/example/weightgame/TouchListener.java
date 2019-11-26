@@ -3,11 +3,13 @@ package com.example.weightgame;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 public class TouchListener implements View.OnTouchListener {
 
     private static final String TAG = "TouchListener";
+    private static final boolean DEBUG = false;
 
     private float oldXvalue;
     private float oldYvalue;
@@ -33,25 +35,25 @@ public class TouchListener implements View.OnTouchListener {
                 viewXvalue = view.getX();
                 viewYvalue = view.getY();
                 Log.d(TAG, "Event.getX() : "+ motionEvent.getX() + ", Event.getY() : " + motionEvent.getY());
-                Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());
-                Log.d(TAG, "viewXvalue : " + viewXvalue + " viewYvalue : " + viewYvalue);
+                Log.d(TAG, "View.getX() : "+ viewXvalue + ", View.getY() : " + viewYvalue);
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                Log.v(TAG, "onTouch(...) Action Move");
-                view.animate() .x(motionEvent.getRawX() + oldXvalue) .y(motionEvent.getRawY() + oldYvalue) .setDuration(0) .start();
+                if(DEBUG) Log.v(TAG, "onTouch(...) Action Move");
+                newXvalue = motionEvent.getRawX() + oldXvalue;
+                newYvalue = motionEvent.getRawY() + oldYvalue;
 
-                newXvalue = view.getX();
-                newYvalue = view.getY();
-                Log.d(TAG, "After X posion : "+ newXvalue + ", After Y posion : " + newYvalue);
+                view.animate().x(motionEvent.getRawX() + oldXvalue).y(motionEvent.getRawY() + oldYvalue).setDuration(0).start();
+                if(DEBUG) Log.d(TAG, "After X position : "+ newXvalue + ", After Y position : " + newYvalue);
                 break;
 
             case MotionEvent.ACTION_UP:
                 Log.v(TAG, "onTouch(...) Action Up");
 
-                LeftVerseViewPositions = gameActivity.getLeftVerseViewPositions();
-                setInRectangle(view);
-                Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());
+                LeftVerseViewPositions[0] = GameActivity.getInstance().mLeftVerseViewPositions[0];
+                LeftVerseViewPositions[1] = GameActivity.getInstance().mLeftVerseViewPositions[1];
+                Log.d(TAG, "LeftVerseViewPositions[0] : "+ LeftVerseViewPositions[0] + ", LeftVerseViewPositions[1] : " + LeftVerseViewPositions[1]);
                 break;
         }
 
