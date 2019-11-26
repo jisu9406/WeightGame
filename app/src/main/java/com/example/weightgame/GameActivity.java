@@ -78,14 +78,7 @@ public class GameActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.v(TAG, "onResume(...)");
-        //mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
-    }
-
-    @Override
-
-    public void onWindowFocusChanged(boolean hasFocus) {
-        mLeftVerseViewPositions[0] = mLeftVerseView.getX();
-        mLeftVerseViewPositions[1] = mLeftVerseView.getY();
+        mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
     }
 
     public static synchronized GameActivity getInstance() {
@@ -114,7 +107,7 @@ public class GameActivity extends Activity {
         Log.v(TAG, "setTouchAndWeight(...)");
 
         for(int i = 0; i<mImageList.size(); i++) {
-            mImageViews[i].setOnTouchListener(new TouchListener());
+            mImageViews[i].setOnTouchListener(new TouchListener(this));
             mImageWeight[i] = random.nextInt(7);
 
             for(int j = 0; j<i; j++) {
@@ -170,7 +163,7 @@ public class GameActivity extends Activity {
                 + " , width+x : " + mLeftVerseViewPositions[2] + " , height+y : " + mLeftVerseViewPositions[3]);
     }
 
-    public void setRightVerseViewPositions(float x, float y, float xpluswidth, float yplusheight) {
+    private void setRightVerseViewPositions(float x, float y, float xpluswidth, float yplusheight) {
 
         mRightVerseViewPositions[0] = x;
         mRightVerseViewPositions[1] = y;
