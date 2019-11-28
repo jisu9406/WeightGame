@@ -32,11 +32,11 @@ public class TouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        Log.v(TAG, "onTouch(...)");
+        Log.d(TAG, "onTouch(...)");
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.v(TAG, "onTouch(...) Action Down");
+                Log.d(TAG, "onTouch(...) Action Down");
 
                 //어떤 상자에도 넣지 않았을 시를 위해 필요한 변수.
                 viewX = view.getX();
@@ -51,7 +51,7 @@ public class TouchListener implements View.OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if(DEBUG) Log.v(TAG, "onTouch(...) Action Move");
+                if(DEBUG) Log.d(TAG, "onTouch(...) Action Move");
                 newXvalue = motionEvent.getRawX() + oldXvalue;
                 newYvalue = motionEvent.getRawY() + oldYvalue;
 
@@ -60,7 +60,7 @@ public class TouchListener implements View.OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_UP:
-                Log.v(TAG, "onTouch(...) Action Up");
+                Log.d(TAG, "onTouch(...) Action Up");
 
                 setInRectangle(view);
                 Log.d(TAG, "View.getX() : "+ view.getX() + ", View.getY() : " + view.getY());

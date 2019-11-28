@@ -50,7 +50,7 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        Log.v(TAG, "onCreate(...)");
+        Log.d(TAG, "onCreate(...)");
 
         mFoodImageView1 = findViewById(R.id.food_one);
         mFoodImageView2 = findViewById(R.id.food_two);
@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume(...)");
+        Log.d(TAG, "onResume(...)");
         mGameHandler.sendEmptyMessage(MESSAGE_SET_POSITION);
     }
 
@@ -90,7 +90,7 @@ public class GameActivity extends Activity {
     }
 
     private void addImageToList() {
-        Log.v(TAG, "addImageToList(...)");
+        Log.d(TAG, "addImageToList(...)");
 
         mImageList.add(mFoodImageView1);
         mImageList.add(mFoodImageView2);
@@ -105,7 +105,7 @@ public class GameActivity extends Activity {
     }
 
     private void setTouchAndWeight() {
-        Log.v(TAG, "setTouchAndWeight(...)");
+        Log.d(TAG, "setTouchAndWeight(...)");
 
         for(int i = 0; i<mImageList.size(); i++) {
             mImageViews[i].setOnTouchListener(new TouchListener(this));
@@ -121,7 +121,7 @@ public class GameActivity extends Activity {
     }
 
     private void setTimerText() {
-        if(DEBUG) Log.v(TAG, "setTimerText(...)");
+        if(DEBUG) Log.d(TAG, "setTimerText(...)");
 
         if(startTime == 0) {
             mTimerView.setText("GameOver");
@@ -132,7 +132,7 @@ public class GameActivity extends Activity {
     }
 
     private String setTimerFormat(long targetTime) {
-        if(DEBUG) Log.v(TAG, "setTimeFormat(...)");
+        if(DEBUG) Log.d(TAG, "setTimeFormat(...)");
 
         String mOutputText = "00:00";
         long seconds = targetTime / 1000;
