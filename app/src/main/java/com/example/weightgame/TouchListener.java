@@ -75,12 +75,12 @@ public class TouchListener implements View.OnTouchListener {
                 && newYvalue >= mLeftRectanglePositions[1] && newYvalue <= mLeftRectanglePositions[3]) {
             Log.d(TAG, "setInRectangle(...) Target View in LeftLectangle!");
 
-            targetView.animate().x(mLeftRectanglePositions[0]+10).y(mLeftRectanglePositions[1]+10).setDuration(0).start();
+            targetView.animate().x(mLeftRectanglePositions[0]+20).y(mLeftRectanglePositions[1]+20).setDuration(0).start();
         } else if (newXvalue >= mRightRectanglePositions[0] && newXvalue <= mRightRectanglePositions[2]
                 && newYvalue >= mRightRectanglePositions[1] && newYvalue <= mRightRectanglePositions[3]) {
             Log.d(TAG, "setInRectangle(...) Target View in RightLectangle!");
 
-            targetView.animate().x(mRightRectanglePositions[0]+10).y(mRightRectanglePositions[1]+10).setDuration(0).start();
+            targetView.animate().x(mRightRectanglePositions[0]+20).y(mRightRectanglePositions[1]+20).setDuration(0).start();
         } else {
             targetView.animate() .x(viewX) .y(viewY) .setDuration(0) .start();
 
